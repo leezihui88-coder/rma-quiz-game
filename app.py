@@ -19,8 +19,9 @@ st.markdown(
     h2 { font-size: 2.1rem !important; }
     h3 { font-size: 1.8rem !important; }
     p, li, label, span { font-size: 1.25rem !important; }
+    .stButton { margin-top: 0.8rem !important; }
     .stButton button {
-        font-size: 1.4rem !important;
+        font-size: 1.2rem !important;
         padding: 0.8rem 1.6rem !important;
     }
     .stAlert p { font-size: 1.05rem !important; }

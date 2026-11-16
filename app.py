@@ -105,6 +105,17 @@ state = load_state()
 
 # ================= 主持人畫面 =================
 if role == "🎤 主持人":
+    if not st.session_state.get("host_authed"):
+        st.header("🔒 主持人登入")
+        pwd = st.text_input("請輸入主持人密碼", type="password", key="host_pwd_input")
+        if st.button("登入"):
+            if pwd == st.secrets.get("host_password", "moxa89191230"):
+                st.session_state["host_authed"] = True
+                st.rerun()
+            else:
+                st.error("密碼錯誤")
+        st.stop()
+
     mode = st.sidebar.radio("模式", ["🎮 遊戲控制台", "📝 題目與答案設定"], key="host_mode")
 
     if mode == "📝 題目與答案設定":

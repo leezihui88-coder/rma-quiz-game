@@ -9,7 +9,7 @@ from streamlit_autorefresh import st_autorefresh
 
 from state import load_state, save_state, reset_game
 
-st.set_page_config(page_title="RMA 午餐猜謎", page_icon="🎉", layout="centered")
+st.set_page_config(page_title="RMA 下午茶猜謎", page_icon="🎉", layout="centered")
 
 st.markdown(
     """
@@ -24,7 +24,8 @@ st.markdown(
         font-size: 1.2rem !important;
         padding: 0.8rem 1.6rem !important;
     }
-    .stAlert p { font-size: 0.9rem !important; }
+    [data-testid="stAlertContainer"] { padding: 0.5rem 0.8rem !important; }
+    .stAlert p { font-size: 0.9rem !important; margin: 0 !important; }
     .stNumberInput input, .stTextInput input, .stTextArea textarea {
         font-size: 1.4rem !important;
     }
@@ -118,7 +119,7 @@ def next_question(state):
 
 
 # ---------------- 側邊欄:身份選擇 ----------------
-st.sidebar.title("🎉 RMA 午餐猜謎")
+st.sidebar.title("🎉 RMA 下午茶猜謎")
 role = st.sidebar.radio(
     "你是誰?",
     ["🎤 主持人", "1️⃣ 第1組", "2️⃣ 第2組", "3️⃣ 第3組"],
@@ -301,14 +302,20 @@ else:
         if status == "open":
             if q["type"] == "number":
                 default_val = float(my_answer) if my_answer not in (None, "") else 0.0
-                val = st.number_input("你們這組的答案", value=default_val, step=1.0, key=f"input_{cur_qid}")
+                val = st.number_input(
+                    "你們這組的答案", value=default_val, step=1.0, key=f"input_{cur_qid}",
+                    label_visibility="collapsed",
+                )
                 if st.button("📨 送出 / 修改答案"):
                     submit_answer(state, cur_qid, gid, val)
                     st.rerun()
             else:
                 opt_labels = [f"{chr(65+i)}. {opt}" for i, opt in enumerate(q["options"])]
                 default_idx = int(my_answer) if my_answer not in (None, "") else 0
-                choice = st.radio("你們這組的答案", opt_labels, index=default_idx, key=f"choice_{cur_qid}")
+                choice = st.radio(
+                    "你們這組的答案", opt_labels, index=default_idx, key=f"choice_{cur_qid}",
+                    label_visibility="collapsed",
+                )
                 if st.button("📨 送出 / 修改答案"):
                     submit_answer(state, cur_qid, gid, opt_labels.index(choice))
                     st.rerun()

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "rma-quiz-game",
+      "runtimeExecutable": "uv",
+      "runtimeArgs": ["run", "streamlit", "run", "app.py", "--server.port", "8530", "--server.headless", "true"],
+      "port": 8530
+    }
+  ]
+}

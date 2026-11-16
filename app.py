@@ -24,7 +24,7 @@ st.markdown(
         font-size: 1.2rem !important;
         padding: 0.8rem 1.6rem !important;
     }
-    .stAlert p { font-size: 1.05rem !important; }
+    .stAlert p { font-size: 0.9rem !important; }
     .stNumberInput input, .stTextInput input, .stTextArea textarea {
         font-size: 1.4rem !important;
     }

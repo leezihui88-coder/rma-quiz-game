@@ -11,6 +11,29 @@ from state import load_state, save_state, reset_game
 
 st.set_page_config(page_title="RMA 午餐猜謎", page_icon="🎉", layout="centered")
 
+st.markdown(
+    """
+    <style>
+    html, body, [class*="css"] { font-size: 20px !important; }
+    h1 { font-size: 2.6rem !important; }
+    h2 { font-size: 2.1rem !important; }
+    h3 { font-size: 1.8rem !important; }
+    p, li, label, span { font-size: 1.25rem !important; }
+    .stButton button {
+        font-size: 1.4rem !important;
+        padding: 0.8rem 1.6rem !important;
+    }
+    .stAlert p { font-size: 1.3rem !important; }
+    .stNumberInput input, .stTextInput input, .stTextArea textarea {
+        font-size: 1.4rem !important;
+    }
+    [data-testid="stMetricValue"] { font-size: 2.2rem !important; }
+    [data-testid="stMetricLabel"] p { font-size: 1.3rem !important; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 STATUS_LABEL = {
     "idle": "⏳ 尚未開放作答",
     "open": "🟢 作答中",

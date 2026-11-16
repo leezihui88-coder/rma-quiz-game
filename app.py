@@ -23,7 +23,7 @@ st.markdown(
         font-size: 1.4rem !important;
         padding: 0.8rem 1.6rem !important;
     }
-    .stAlert p { font-size: 1.3rem !important; }
+    .stAlert p { font-size: 1.05rem !important; }
     .stNumberInput input, .stTextInput input, .stTextArea textarea {
         font-size: 1.4rem !important;
     }
@@ -200,7 +200,10 @@ if role == "🎤 主持人":
         q = get_question(state, cur_qid)
 
         st.subheader(f"第 {cur_qid} / {total_q} 題")
-        st.markdown(f"**{q['title']}**")
+        st.markdown(
+            f"<div style='font-size:2.3rem; font-weight:700; line-height:1.4; margin:0.3rem 0;'>{q['title']}</div>",
+            unsafe_allow_html=True,
+        )
         st.caption(q["hint"])
         st.markdown(f"狀態:{STATUS_LABEL[state['status']]}")
 
@@ -216,17 +219,18 @@ if role == "🎤 主持人":
                 label = val if q["type"] == "number" else ["A", "B", "C"][int(val)]
                 c.metric(name, label)
 
-        btn_cols = st.columns(4)
-        if btn_cols[0].button("🟢 開放作答", use_container_width=True):
+        btn_row1 = st.columns(2)
+        if btn_row1[0].button("🟢 開放作答", use_container_width=True):
             open_question(state, cur_qid)
             st.rerun()
-        if btn_cols[1].button("🔒 鎖定作答", use_container_width=True):
+        if btn_row1[1].button("🔒 鎖定作答", use_container_width=True):
             close_question(state)
             st.rerun()
-        if btn_cols[2].button("✅ 公布答案", use_container_width=True):
+        btn_row2 = st.columns(2)
+        if btn_row2[0].button("✅ 公布答案", use_container_width=True):
             reveal_question(state, cur_qid)
             st.rerun()
-        if btn_cols[3].button("↩️ 撤銷公布", use_container_width=True):
+        if btn_row2[1].button("↩️ 撤銷公布", use_container_width=True):
             undo_reveal(state, cur_qid)
             st.rerun()
 
@@ -288,7 +292,10 @@ else:
     if status == "idle":
         st.info("請等待主持人開放這一題作答 🙏")
     else:
-        st.markdown(f"### {q['title']}")
+        st.markdown(
+            f"<div style='font-size:2.3rem; font-weight:700; line-height:1.4; margin:0.3rem 0;'>{q['title']}</div>",
+            unsafe_allow_html=True,
+        )
 
         if status == "open":
             if q["type"] == "number":

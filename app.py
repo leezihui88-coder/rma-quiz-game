@@ -170,7 +170,9 @@ if role == "🎤 主持人":
                 if q["type"] == "number":
                     q["correct_number"] = st.number_input(
                         "正確數字",
-                        value=float(q["correct_number"]) if q["correct_number"] is not None else 0.0,
+                        value=int(q["correct_number"]) if q["correct_number"] is not None else 0,
+                        step=1,
+                        format="%d",
                         key=f"num_{q['id']}",
                     )
                 else:
@@ -301,9 +303,9 @@ else:
 
         if status == "open":
             if q["type"] == "number":
-                default_val = float(my_answer) if my_answer not in (None, "") else 0.0
+                default_val = int(my_answer) if my_answer not in (None, "") else 0
                 val = st.number_input(
-                    "你們這組的答案", value=default_val, step=1.0, key=f"input_{cur_qid}",
+                    "你們這組的答案", value=default_val, step=1, format="%d", key=f"input_{cur_qid}",
                     label_visibility="collapsed",
                 )
                 if st.button("📨 送出 / 修改答案"):

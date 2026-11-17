@@ -48,7 +48,7 @@ DEFAULT_QUESTIONS = [
     {
         "id": 4,
         "type": "choice",
-        "title": "今年送修回來、檢測完沒有異常(NPF)的大約占幾成?",
+        "title": "今年送修件(RMA + DOA 共 3,606 件)中,檢測後發現「沒有異常(NPF)」的大約占幾成?",
         "hint": "給三個區間讓大家選。",
         "options": ["區間 A", "區間 B", "區間 C"],
         "correct_number": None,

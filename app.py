@@ -81,20 +81,21 @@ def reveal_question(state, qid):
     q = get_question(state, qid)
     answers = state["answers"].get(qid_s, {})
     winners = []
-    if q["type"] == "number" and q["correct_number"] is not None:
-        diffs = {}
-        for gid, val in answers.items():
-            try:
-                diffs[gid] = abs(float(val) - float(q["correct_number"]))
-            except (TypeError, ValueError):
-                continue
-        if diffs:
-            best = min(diffs.values())
-            winners = [gid for gid, d in diffs.items() if d == best]
-    elif q["type"] == "choice" and q["correct_option"] is not None:
-        for gid, val in answers.items():
-            if val is not None and int(val) == int(q["correct_option"]):
-                winners.append(gid)
+    if q.get("scoring", True):
+        if q["type"] == "number" and q["correct_number"] is not None:
+            diffs = {}
+            for gid, val in answers.items():
+                try:
+                    diffs[gid] = abs(float(val) - float(q["correct_number"]))
+                except (TypeError, ValueError):
+                    continue
+            if diffs:
+                best = min(diffs.values())
+                winners = [gid for gid, d in diffs.items() if d == best]
+        elif q["type"] == "choice" and q["correct_option"] is not None:
+            for gid, val in answers.items():
+                if val is not None and int(val) == int(q["correct_option"]):
+                    winners.append(gid)
 
     for gid in winners:
         state["scores"][gid] = state["scores"].get(gid, 0) + 1

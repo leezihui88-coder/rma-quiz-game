@@ -19,11 +19,12 @@ DEFAULT_QUESTIONS = [
         "id": 1,
         "type": "number",
         "title": "暖身題:今年一共修了幾台?",
-        "hint": "各組估一個數字,最接近者勝。",
+        "hint": "各組估一個數字,純暖身,不列入計分。",
         "options": ["", "", ""],
         "correct_number": None,
         "correct_option": None,
         "story": "",
+        "scoring": False,
     },
     {
         "id": 2,

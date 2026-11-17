@@ -1,13 +1,17 @@
-"""RMA 午餐猜謎遊戲 — Streamlit 版
-3 台電腦各自連到同一個網址:
+"""RMA 下午茶猜謎遊戲 — Streamlit 版
+每台電腦各自連到同一個網址:
   - 主持人那台選「主持人」,控制題目開放/公布、看即時計分
-  - 其餘 3 台各自選「第1組/第2組/第3組」,負責送出該組答案
+  - 其餘電腦各自選「第1組/第2組/.../第N組」(組數見 state.NUM_GROUPS),負責送出該組答案
 狀態共用一份 data/state.json,所有電腦連到同一網址即可即時同步。
 """
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 
-from state import load_state, save_state, reset_game
+from state import load_state, save_state, reset_game, NUM_GROUPS
+
+GROUP_NUM_EMOJI = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣"]
+GROUP_ROLES = [f"{GROUP_NUM_EMOJI[i]} 第{i + 1}組" for i in range(NUM_GROUPS)]
+ROLE_TO_GID = {role: str(i + 1) for i, role in enumerate(GROUP_ROLES)}
 
 st.set_page_config(page_title="RMA 下午茶猜謎", page_icon="🎉", layout="centered")
 
@@ -122,7 +126,7 @@ def next_question(state):
 st.sidebar.title("🎉 RMA 下午茶猜謎")
 role = st.sidebar.radio(
     "你是誰?",
-    ["🎤 主持人", "1️⃣ 第1組", "2️⃣ 第2組", "3️⃣ 第3組"],
+    ["🎤 主持人"] + GROUP_ROLES,
     key="role",
 )
 
@@ -148,7 +152,7 @@ if role == "🎤 主持人":
         st.caption("活動前先把每題的正解、選項內容填好。隨時存檔,隨時可以調整。")
 
         with st.expander("✏️ 修改組名", expanded=False):
-            cols = st.columns(3)
+            cols = st.columns(NUM_GROUPS)
             new_names = {}
             for i, c in enumerate(cols, start=1):
                 new_names[str(i)] = c.text_input(f"第{i}組", state["group_names"][str(i)], key=f"gname_{i}")
@@ -212,7 +216,7 @@ if role == "🎤 主持人":
         st.markdown(f"狀態:{STATUS_LABEL[state['status']]}")
 
         answers = state["answers"].get(str(cur_qid), {})
-        cols = st.columns(3)
+        cols = st.columns(NUM_GROUPS)
         for i, c in enumerate(cols, start=1):
             gid = str(i)
             name = state["group_names"][gid]
@@ -260,7 +264,7 @@ if role == "🎤 主持人":
 
         st.divider()
         st.subheader("🏆 即時排行榜")
-        score_cols = st.columns(3)
+        score_cols = st.columns(NUM_GROUPS)
         ranking = sorted(state["scores"].items(), key=lambda kv: -kv[1])
         for i, c in enumerate(score_cols, start=1):
             gid = str(i)
@@ -279,7 +283,7 @@ if role == "🎤 主持人":
 # ================= 小組作答畫面 =================
 else:
     st_autorefresh(interval=2000, key="group_refresh")
-    gid = {"1️⃣ 第1組": "1", "2️⃣ 第2組": "2", "3️⃣ 第3組": "3"}[role]
+    gid = ROLE_TO_GID[role]
     gname = state["group_names"][gid]
     st.header(f"👋 {gname}")
 
@@ -348,7 +352,7 @@ else:
 
     st.divider()
     st.subheader("🏆 目前排行榜")
-    score_cols = st.columns(3)
+    score_cols = st.columns(NUM_GROUPS)
     for i, c in enumerate(score_cols, start=1):
         gi = str(i)
         c.metric(state["group_names"][gi], f"{state['scores'][gi]} 分")

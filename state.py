@@ -7,6 +7,13 @@ from pathlib import Path
 
 STATE_FILE = Path(__file__).parent / "data" / "state.json"
 
+NUM_GROUPS = 4
+_GROUP_NUMERALS = ["一", "二", "三", "四", "五", "六", "七", "八"]
+
+
+def default_group_name(i):
+    return f"第{_GROUP_NUMERALS[i - 1]}組"
+
 DEFAULT_QUESTIONS = [
     {
         "id": 1,
@@ -93,15 +100,29 @@ DEFAULT_QUESTIONS = [
 
 def default_state():
     return {
-        "group_names": {"1": "第一組", "2": "第二組", "3": "第三組"},
+        "group_names": {str(i): default_group_name(i) for i in range(1, NUM_GROUPS + 1)},
         "questions": DEFAULT_QUESTIONS,
         "current": 1,
         "status": "idle",  # idle / open / closed / revealed
         "answers": {},      # {qid_str: {gid_str: answer}}
-        "scores": {"1": 0, "2": 0, "3": 0},
+        "scores": {str(i): 0 for i in range(1, NUM_GROUPS + 1)},
         "scored": {},        # {qid_str: True} 避免重複計分
         "awarded": {},       # {qid_str: [gid, ...]} 該題拿到分的組,方便撤銷
     }
+
+
+def _migrate_group_count(state):
+    """補上組數變動後缺少的 group_names / scores 欄位(例如從 3 組改成 4 組)。"""
+    changed = False
+    for i in range(1, NUM_GROUPS + 1):
+        gid = str(i)
+        if gid not in state["group_names"]:
+            state["group_names"][gid] = default_group_name(i)
+            changed = True
+        if gid not in state["scores"]:
+            state["scores"][gid] = 0
+            changed = True
+    return changed
 
 
 def load_state():
@@ -110,7 +131,10 @@ def load_state():
         save_state(state)
         return state
     with open(STATE_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+        state = json.load(f)
+    if _migrate_group_count(state):
+        save_state(state)
+    return state
 
 
 def save_state(state):
